@@ -42,7 +42,7 @@ Rest of the lyrics...
 
 ```bash
 # Install system dependencies
-paru -S playerctl python-rich python-pyfiglet
+paru -S playerctl python-rich
 
 # Install syncedlyrics
 pipx install syncedlyrics
@@ -59,7 +59,7 @@ chmod +x ~/.local/bin/lyrics-live
 sudo apt install playerctl python3-pip
 
 # Install Python packages
-pip3 install --user rich pyfiglet syncedlyrics
+pip3 install --user rich syncedlyrics
 
 # Download the script
 curl -o ~/.local/bin/lyrics-live https://raw.githubusercontent.com/Joccem/spotify-live-lyrics/main/spotify-live-lyrics.py
@@ -71,7 +71,7 @@ chmod +x ~/.local/bin/lyrics-live
 ```bash
 # Install playerctl (check your package manager)
 # Then install Python packages
-pip3 install --user rich pyfiglet syncedlyrics
+pip3 install --user rich syncedlyrics
 
 # Download and install script
 curl -o ~/.local/bin/lyrics-live https://raw.githubusercontent.com/Joccem/spotify-live-lyrics/main/spotify-live-lyrics.py
