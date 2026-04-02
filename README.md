@@ -1,6 +1,6 @@
 # Spotify Live Lyrics 🎵
 
-A beautiful, real-time synced lyrics display for Spotify with a sleek Nord color theme.
+A real-time synced lyrics display for Spotify with a Nord color theme.
 
 ![Nord Theme](https://img.shields.io/badge/theme-Nord-88C0D0)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
@@ -8,33 +8,38 @@ A beautiful, real-time synced lyrics display for Spotify with a sleek Nord color
 
 ## Features
 
-✨ **Real-time sync** - Lyrics update smoothly as the song plays  
-🎨 **Nord theme** - Beautiful color scheme that's easy on the eyes  
-⌨️ **Live adjustment** - Fine-tune timing with Q/A keys  
-🎯 **Smart highlighting** - Current line in yellow, context in grey  
-🔄 **Auto song detection** - Switches lyrics when you change songs  
-📱 **Responsive** - Adapts to any terminal size
+- **Real-time sync** - Lyrics update smoothly as the song plays
+- **Nord theme** - Color scheme that's easy on the eyes
+- **Live adjustment** - Fine-tune timing with Q/A keys (0.1s per press)
+- **Centered display** - Current line is always highlighted in the middle of the window
+- **Auto song detection** - Switches lyrics when you change songs
+- **Responsive** - Adapts to any terminal size
 
 ## Preview
 
 ```
-🎵 Artist Name - Song Title
-[Offset: +0.0s | Q=earlier A=later Z=reset X=exit]
+              🎵 Artist Name - Song Title
+     [Offset: +0.0s | Q=earlier A=later Z=reset X=exit]
 
-Previous lyric line here
-♪♪  Current lyric line highlighted in yellow  ♪♪
-Next lyric line here
-
-Rest of the lyrics...
+                  ...earlier lyrics...
+                  a faded past line
+                  the line before current
+♪♪              Current lyric line highlighted in yellow            ♪♪
+                  the line after current
+                  upcoming line
+                  ...more upcoming lines...
 ```
+
+The highlighted line always stays in the vertical center of the terminal. Past lines appear above (faded), future lines appear below.
 
 ## Requirements
 
 - **Linux** (tested on Arch/CachyOS, should work on Ubuntu/Debian/Fedora)
 - **Python 3.8+**
-- **Spotify** (desktop app or web player)
+- **Spotify** (desktop app)
 - **playerctl** - for Spotify integration
 - **syncedlyrics** - for fetching lyrics
+- **rich** - for terminal UI rendering
 
 ## Installation
 
@@ -48,7 +53,7 @@ paru -S playerctl python-rich
 pipx install syncedlyrics
 
 # Download the script
-curl -o ~/.local/bin/lyrics-live https://raw.githubusercontent.com/Joccem/spotify-live-lyrics/main/spotify-live-lyrics.py
+curl -o ~/.local/bin/lyrics-live https://raw.githubusercontent.com/jomar02/spotify-live-lyrics/main/spotify-live-lyrics.py
 chmod +x ~/.local/bin/lyrics-live
 ```
 
@@ -62,7 +67,7 @@ sudo apt install playerctl python3-pip
 pip3 install --user rich syncedlyrics
 
 # Download the script
-curl -o ~/.local/bin/lyrics-live https://raw.githubusercontent.com/Joccem/spotify-live-lyrics/main/spotify-live-lyrics.py
+curl -o ~/.local/bin/lyrics-live https://raw.githubusercontent.com/jomar02/spotify-live-lyrics/main/spotify-live-lyrics.py
 chmod +x ~/.local/bin/lyrics-live
 ```
 
@@ -74,7 +79,7 @@ chmod +x ~/.local/bin/lyrics-live
 pip3 install --user rich syncedlyrics
 
 # Download and install script
-curl -o ~/.local/bin/lyrics-live https://raw.githubusercontent.com/Joccem/spotify-live-lyrics/main/spotify-live-lyrics.py
+curl -o ~/.local/bin/lyrics-live https://raw.githubusercontent.com/jomar02/spotify-live-lyrics/main/spotify-live-lyrics.py
 chmod +x ~/.local/bin/lyrics-live
 ```
 
@@ -90,8 +95,8 @@ chmod +x ~/.local/bin/lyrics-live
 
 | Key | Action |
 |-----|--------|
-| `Q` | Show lyrics earlier (increase offset) |
-| `A` | Show lyrics later (decrease offset) |
+| `Q` | Show lyrics earlier (increase offset by 0.1s) |
+| `A` | Show lyrics later (decrease offset by 0.1s) |
 | `Z` | Reset offset to 0.0 |
 | `X` | Exit viewer |
 | `Ctrl+C` | Exit viewer |
@@ -104,20 +109,20 @@ Edit the script to change default values:
 
 ```python
 # Timing offset default (in seconds)
-TIMING_OFFSET_DEFAULT = 0.0  # Start with no offset
+TIMING_OFFSET_DEFAULT = 0.0
 
 # Color scheme (Nord palette)
-NORD_AURORA_YELLOW = "#EBCB8B"  # Current line color
-NORD3 = "#4C566A"  # Context lines background
+NORD_AURORA_YELLOW = "#EBCB8B"  # Current line highlight color
+NORD3 = "#4C566A"               # Previous/next line background
 ```
 
 ## Troubleshooting
 
 ### "playerctl is not installed"
-Install playerctl using your package manager (see Installation section)
+Install playerctl using your package manager (see Installation section).
 
 ### "No synced lyrics found"
-Not all songs have synced lyrics available. The script will wait for the next song.
+Not all songs have synced lyrics available. The script will wait and retry when the song changes.
 
 ### Lyrics are off-sync
 Use `Q` to make lyrics appear earlier, or `A` to make them appear later. Each press adjusts by 0.1 seconds.
@@ -127,27 +132,23 @@ Make sure Spotify is running and actually playing a song (not paused).
 
 ## How It Works
 
-1. **playerctl** monitors Spotify playback and provides current position
-2. **syncedlyrics** fetches time-synced lyrics from online databases
-3. The script parses `.lrc` format lyrics and matches them to playback position
-4. **Rich** library renders the beautiful terminal UI with Nord colors
-5. Live offset adjustment compensates for any timing differences
+1. **playerctl** monitors Spotify playback and returns the current artist, title, and position
+2. **syncedlyrics** fetches time-synced `.lrc` lyrics from online databases
+3. The script parses the `.lrc` timestamps and finds the line matching the current position
+4. **rich** renders the terminal UI: current line centered and highlighted, surrounding lines styled by distance
+5. The display refreshes at 10 FPS; offset adjustment compensates for timing differences
 
 ## Contributing
 
-**Full transparency:** This was 100% vibe-coded with AI assistance (Claude). The code works great, but there's definitely room for improvement and optimization!
+**Full transparency:** This was vibe-coded with AI assistance (Claude). The code works great, but there's definitely room for improvement!
 
-I hope you enjoy using it, and if you're a developer who wants to refactor, optimize, or add features - please do! Contributions are more than welcome:
+Contributions welcome:
 
-- Report bugs
-- Suggest features
-- Submit pull requests
-- Improve code quality
-- Refactor for better performance
-- Add cross-platform support (Windows/macOS)
-- Improve documentation
-
-Don't be shy - make it better! 🚀
+- Bug reports
+- Feature suggestions
+- Pull requests
+- Performance improvements
+- Cross-platform support (Windows/macOS)
 
 ## Credits
 
@@ -161,4 +162,4 @@ MIT License - feel free to use and modify!
 
 ---
 
-**Enjoy singing along! 🎤✨**
+**Enjoy singing along!**

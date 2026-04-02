@@ -223,14 +223,17 @@ def keyboard_listener():
 def render_lyrics(lyrics: List[LyricsLine], current_index: int,
                  artist: str, title: str, console_height: int,
                  console_width: int) -> Text:
-    """Render lyrics with highlighting - responsive to terminal size"""
+    """Render lyrics with current line always centered in the window"""
 
     global current_offset
 
-    # Calculate dynamic context based on terminal height
-    available_lines = max(5, console_height - 6)
-    context_before = (available_lines - 3) // 2
-    context_after = available_lines - context_before - 3
+    # Header takes 3 lines: title + controls + blank line
+    header_lines = 3
+    available_height = max(5, console_height - header_lines)
+
+    # Split available space evenly around the current line
+    lines_above = (available_height - 1) // 2
+    lines_below = available_height - lines_above - 1
 
     text = Text()
 
@@ -244,12 +247,11 @@ def render_lyrics(lyrics: List[LyricsLine], current_index: int,
     text.append(controls.center(console_width) + "\n\n",
                style=f"dim {NORD_FROST_BLUE}")
 
-    start_idx = max(0, current_index - context_before)
-    end_idx = min(len(lyrics), current_index + context_after + 3)
-
-    for i in range(start_idx, end_idx):
-        if i >= len(lyrics):
-            break
+    for i in range(current_index - lines_above, current_index + lines_below + 1):
+        # Pad with blank lines when outside lyrics range
+        if i < 0 or i >= len(lyrics):
+            text.append("\n")
+            continue
 
         line = lyrics[i]
 
@@ -260,12 +262,11 @@ def render_lyrics(lyrics: List[LyricsLine], current_index: int,
 
         elif i == current_index - 1:
             # Previous line - grey background
-            text.append("\n")
             text.append(line.text.center(console_width) + "\n",
                        style=f"{NORD_SNOW_STORM} on {NORD3}")
 
         elif i == current_index:
-            # CURRENT line - yellow background, bold
+            # CURRENT line - yellow background, bold, centered
             line_content = f"♪♪  {line.text}  ♪♪"
             text.append(line_content.center(console_width) + "\n",
                        style=f"bold black on {NORD_AURORA_YELLOW}")
@@ -274,7 +275,6 @@ def render_lyrics(lyrics: List[LyricsLine], current_index: int,
             # Next line - grey background
             text.append(line.text.center(console_width) + "\n",
                        style=f"{NORD_SNOW_STORM} on {NORD3}")
-            text.append("\n")
 
         else:
             # Future lines - normal
