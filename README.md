@@ -1,15 +1,15 @@
 # Spotify Live Lyrics 🎵
 
-A real-time synced lyrics display for Spotify with a Nord color theme.
+A real-time synced lyrics display for Spotify with a Catppuccin Mocha color theme.
 
-![Nord Theme](https://img.shields.io/badge/theme-Nord-88C0D0)
+![Catppuccin](https://img.shields.io/badge/theme-Catppuccin_Mocha-CBA6F7)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
 ![Python](https://img.shields.io/badge/python-3.8+-green)
 
 ## Features
 
 - **Real-time sync** - Lyrics update smoothly as the song plays
-- **Nord theme** - Color scheme that's easy on the eyes
+- **Catppuccin Mocha theme** - Mauve highlight, blue context lines
 - **Live adjustment** - Fine-tune timing with Q/A keys (0.1s per press)
 - **Centered display** - Current line is always highlighted in the middle of the window
 - **Auto song detection** - Switches lyrics when you change songs
@@ -23,9 +23,9 @@ A real-time synced lyrics display for Spotify with a Nord color theme.
 
                   ...earlier lyrics...
                   a faded past line
-                  the line before current
-♪♪              Current lyric line highlighted in yellow            ♪♪
-                  the line after current
+                  the line before current        <- blue on dark blue
+♪♪              Current lyric line              ♪♪  <- mauve highlight
+                  the line after current         <- blue on dark blue
                   upcoming line
                   ...more upcoming lines...
 ```
@@ -111,9 +111,10 @@ Edit the script to change default values:
 # Timing offset default (in seconds)
 TIMING_OFFSET_DEFAULT = 0.0
 
-# Color scheme (Nord palette)
-NORD_AURORA_YELLOW = "#EBCB8B"  # Current line highlight color
-NORD3 = "#4C566A"               # Previous/next line background
+# Color scheme (Catppuccin Mocha)
+NORD_AURORA_YELLOW = "#CBA6F7"  # Mauve - current line highlight
+NORD3 = "#313244"               # Surface0 - previous/next line background
+NORD_SNOW_STORM = "#89B4FA"     # Blue - previous/next line text
 ```
 
 ## Troubleshooting
@@ -135,7 +136,7 @@ Make sure Spotify is running and actually playing a song (not paused).
 1. **playerctl** monitors Spotify playback and returns the current artist, title, and position
 2. **syncedlyrics** fetches time-synced `.lrc` lyrics from online databases
 3. The script parses the `.lrc` timestamps and finds the line matching the current position
-4. **rich** renders the terminal UI: current line centered and highlighted, surrounding lines styled by distance
+4. **rich** renders the terminal UI: current line centered and highlighted in mauve, surrounding lines in blue
 5. The display refreshes at 10 FPS; offset adjustment compensates for timing differences
 
 ## Contributing
@@ -153,7 +154,7 @@ Contributions welcome:
 ## Credits
 
 - Built by **Jocce** with assistance from **Claude (Anthropic)**
-- Uses the [Nord color palette](https://www.nordtheme.com/)
+- Uses the [Catppuccin](https://github.com/catppuccin/catppuccin) Mocha color palette
 - Lyrics fetched via [syncedlyrics](https://github.com/moehmeni/syncedlyrics)
 
 ## License
